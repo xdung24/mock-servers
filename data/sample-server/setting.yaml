@@ -1,0 +1,26 @@
+name: Sample mock server
+host: localhost
+port: 9000
+requests:
+  - name: sample api to get data
+    method: GET
+    path: /api/data
+    responses:
+      - name: get data success
+        query: ?id=1
+        code: 200
+        content_type: Application/json
+        file_path: ./data/sample-server/get-data-success.json
+      - name: get data error
+        query: ?id=2
+        code: 404
+
+  - name: sample api to update data
+    method: POST
+    path: /api/data
+    responses:
+      - name: Success
+        query: ?id=1
+        code: 200
+      - name: bad request error
+        code: 400
