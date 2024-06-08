@@ -32,6 +32,10 @@ func main() {
 		setupMockServer(appToMock, cacheManager)
 	}
 
+	// Watch for changes in the data folder
+	// go watchDirectory(data_folder)
+	go pollingDirectory(data_folder, 10)
+
 	// Wait for the interrupt signal
 	fmt.Println("app is running. Press Ctrl+C to terminate.")
 	<-interrupt

@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: no
-    # volumes:
-    #   - ./data/:/mock-servers/data/
+    volumes:
+      - ./data/:/mock-servers/data/
     ports:
       - "9000:9000"
+    command: ["/mock-servers/data/"]
