@@ -1,0 +1,12 @@
+services:
+  mock-servers:
+    container_name: mock-servers
+    image: mock-servers
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: no
+    # volumes:
+    #   - ./data/:/mock-servers/data/
+    ports:
+      - "9000:9000"

@@ -17,16 +17,25 @@ func main() {
 	ctx := context.TODO()
 	cacheManager := newCacheManager(ctx)
 
+	// Get the data folder from argument
+	var data_folder string
+	if len(os.Args) > 1 {
+		data_folder = os.Args[1]
+	} else {
+		data_folder = "./data"
+	}
+	fmt.Println("data folder: ", data_folder)
+
 	// Setup mock servers
-	appsToMock := listSubfolders("./data")
+	appsToMock := listSubfolders(data_folder)
 	for _, appToMock := range appsToMock {
 		setupMockServer(appToMock, cacheManager)
 	}
 
 	// Wait for the interrupt signal
-	fmt.Println("App is running. Press Ctrl+C to terminate.")
+	fmt.Println("app is running. Press Ctrl+C to terminate.")
 	<-interrupt
-	fmt.Println("Terminating the application.")
+	fmt.Println("terminating the application.")
 }
 
 func listSubfolders(rootDir string) []string {

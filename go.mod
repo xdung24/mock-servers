@@ -1,4 +1,4 @@
-module cma/mock-servers
+module mock-servers
 
 go 1.22.4
 
