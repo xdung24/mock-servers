@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 
@@ -31,6 +32,8 @@ func watchDirectory(path string) error {
 				log.Println("event:", event)
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Println("modified file:", event.Name)
+					// Self restart
+					restartApp()
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
@@ -119,6 +122,29 @@ func pollingDirectory(folderPath string, interval time.Duration) {
 		if changed {
 			// Perform your action on change here
 			log.Println("Folder has changed")
+			// Self restart
+			restartApp()
 		}
 	}
+}
+
+func restartApp() {
+	// Get the path to the current executable
+	executable, err := os.Executable()
+	if err != nil {
+		panic("Failed to get executable path: " + err.Error())
+	}
+
+	// Prepare the command to relaunch the executable
+	cmd := exec.Command(executable)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	// Start the new instance
+	if err := cmd.Start(); err != nil {
+		panic("Failed to restart: " + err.Error())
+	}
+
+	// Exit the current instance
+	os.Exit(0)
 }

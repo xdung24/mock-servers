@@ -35,7 +35,7 @@ func main() {
 	if config.UseFsNotify {
 		go watchDirectory(config.DataFolder)
 	} else if config.UsePolling {
-		go pollingDirectory(config.DataFolder, time.Duration(config.PollingTime)*time.Second)
+		go pollingDirectory(config.DataFolder, time.Duration(config.PollingTime))
 	}
 
 	// Wait for the interrupt signal

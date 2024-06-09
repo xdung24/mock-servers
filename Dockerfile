@@ -50,4 +50,3 @@ WORKDIR /mock-servers
 
 # Set entrypoint
 ENTRYPOINT ["mock-servers"]	
-CMD [ "/mock-servers/data/" ]
