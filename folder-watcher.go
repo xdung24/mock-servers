@@ -108,7 +108,6 @@ func pollingDirectory(folderPath string, interval time.Duration) {
 			log.Printf("Error calculating folder checksum: %v", err)
 			continue
 		}
-		log.Printf("Folder checksum: %s", checksum)
 		var changed bool = false
 		if checksum != lastChecksum {
 			if lastChecksum != "" {

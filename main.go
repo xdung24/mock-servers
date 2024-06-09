@@ -6,9 +6,17 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
+	// Get the configuration
+	config := getConfig()
+	fmt.Println("data folder: ", config.DataFolder)
+	fmt.Println("use fsnotify: ", config.UseFsNotify)
+	fmt.Println("use polling: ", config.UsePolling)
+	fmt.Println("polling time: ", config.PollingTime)
+
 	// Create a channel to capture the interrupt signal (Ctrl+C)
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -17,24 +25,18 @@ func main() {
 	ctx := context.TODO()
 	cacheManager := newCacheManager(ctx)
 
-	// Get the data folder from argument
-	var data_folder string
-	if len(os.Args) > 1 {
-		data_folder = os.Args[1]
-	} else {
-		data_folder = "./data"
-	}
-	fmt.Println("data folder: ", data_folder)
-
 	// Setup mock servers
-	appsToMock := listSubfolders(data_folder)
+	appsToMock := listSubfolders(config.DataFolder)
 	for _, appToMock := range appsToMock {
 		setupMockServer(appToMock, cacheManager)
 	}
 
 	// Watch for changes in the data folder
-	// go watchDirectory(data_folder)
-	go pollingDirectory(data_folder, 10)
+	if config.UseFsNotify {
+		go watchDirectory(config.DataFolder)
+	} else if config.UsePolling {
+		go pollingDirectory(config.DataFolder, time.Duration(config.PollingTime)*time.Second)
+	}
 
 	// Wait for the interrupt signal
 	fmt.Println("app is running. Press Ctrl+C to terminate.")
