@@ -42,6 +42,9 @@ FROM lean-production as production
 # Copy sample data
 COPY data /mock-servers/data
 
+# Copy configuration
+COPY .env_sample /mock-servers/.env
+
 # Set workdir
 WORKDIR /mock-servers
 
