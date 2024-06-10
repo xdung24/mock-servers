@@ -32,7 +32,14 @@ func main() {
 	// Setup mock servers
 	appsToMock := listSubfolders(config.DataFolder)
 	for _, appToMock := range appsToMock {
-		setupMockServer(appToMock, cacheManager)
+		if config.WebEngine == "gin" {
+			setupMockServerGin(appToMock, cacheManager)
+		} else if config.WebEngine == "fiber" {
+			setupMockServerFiber(appToMock, cacheManager)
+		} else {
+			fmt.Println("error: web engine not supported")
+			return
+		}
 	}
 
 	// Watch for changes in the data folder

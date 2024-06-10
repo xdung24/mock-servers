@@ -15,6 +15,7 @@ type Config struct {
 	UseFsNotify   bool   `mapstructure:"USE_FSNOTIFY"`
 	UsePolling    bool   `mapstructure:"USE_POLLING"`
 	PollingTime   int    `mapstructure:"POLLING_TIME"`
+	WebEngine     string `mapstructure:"WEB_ENGINE"`
 }
 
 // Get the configuration from order:
@@ -39,12 +40,14 @@ func getEnvConfig() Config {
 	rootCmd.Flags().Bool("use-fsnotify", false, "Use FsNotify to watch for changes in the data folder")
 	rootCmd.Flags().Bool("use-polling", false, "Use Polling to watch for changes in the data folder (only use this if fsnotify is not working)")
 	rootCmd.Flags().Int("polling-time", 10, "Polling time in seconds")
+	rootCmd.Flags().String("web-engine", "gin", "Web engine to use (gin, fiber)")
 
 	// Bind flags to Viper keys
 	viper.BindPFlag("DATA_FOLDER", rootCmd.Flags().Lookup("data-folder"))
 	viper.BindPFlag("USE_FSNOTIFY", rootCmd.Flags().Lookup("use-fsnotify"))
 	viper.BindPFlag("USE_POLLING", rootCmd.Flags().Lookup("use-polling"))
 	viper.BindPFlag("POLLING_TIME", rootCmd.Flags().Lookup("polling-time"))
+	viper.BindPFlag("WEB_ENGINE", rootCmd.Flags().Lookup("web-engine"))
 
 	// Execute the command
 	if err := rootCmd.Execute(); err != nil {
@@ -58,6 +61,7 @@ func getEnvConfig() Config {
 		UseFsNotify:   viper.GetBool("USE_FSNOTIFY"),
 		UsePolling:    viper.GetBool("USE_POLLING"),
 		PollingTime:   viper.GetInt("POLLING_TIME"),
+		WebEngine:     viper.GetString("WEB_ENGINE"),
 	}
 }
 
@@ -76,8 +80,14 @@ func (config Config) Validate() error {
 		return errors.New("can not use both fsnotify and polling")
 	}
 
+	// Polling time should be greater than 0s
 	if config.UsePolling && config.PollingTime <= 0 {
 		return errors.New("polling time should be greater than 0")
+	}
+
+	// Web engine should be gin or fiber
+	if config.WebEngine != "gin" && config.WebEngine != "fiber" {
+		return errors.New("web engine should be gin or fiber")
 	}
 
 	return nil

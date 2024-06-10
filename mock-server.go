@@ -36,13 +36,12 @@ func findBestMatch(urlStr string, responses []Response) int {
 	return bestMatchIndex
 }
 
-func setupMockServer(appName string, cacheManager *CacheManager) {
+func setupMockServerGin(appName string, cacheManager *CacheManager) {
 	setting := parseSetting(appName)
 	setting.loadResources(cacheManager)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
-	gin.SetMode(gin.DebugMode)
 
 	// Show server info
 	fmt.Println("Running mock server for: ", setting.Name)
