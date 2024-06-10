@@ -20,6 +20,7 @@ func main() {
 		fmt.Println("use fsnotify: ", config.UseFsNotify)
 		fmt.Println("use polling: ", config.UsePolling)
 		fmt.Println("polling time: ", config.PollingTime)
+		fmt.Println("web engine: ", config.WebEngine)
 	}
 
 	// Create a channel to capture the interrupt signal (Ctrl+C)

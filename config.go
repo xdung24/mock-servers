@@ -27,6 +27,10 @@ func getEnvConfig() Config {
 	viper.SetConfigFile(".env") // Load .env file
 	viper.AutomaticEnv()        // Read environment variables
 
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("error reading the config file: ", err)
+	}
+
 	// Define a Cobra command
 	rootCmd := &cobra.Command{
 		Use:   "MockServer",
@@ -40,7 +44,7 @@ func getEnvConfig() Config {
 	rootCmd.Flags().Bool("use-fsnotify", false, "Use FsNotify to watch for changes in the data folder")
 	rootCmd.Flags().Bool("use-polling", false, "Use Polling to watch for changes in the data folder (only use this if fsnotify is not working)")
 	rootCmd.Flags().Int("polling-time", 10, "Polling time in seconds")
-	rootCmd.Flags().String("web-engine", "gin", "Web engine to use (gin, fiber)")
+	rootCmd.Flags().String("web-engine", "", "Web engine to use (gin, fiber)")
 
 	// Bind flags to Viper keys
 	viper.BindPFlag("DATA_FOLDER", rootCmd.Flags().Lookup("data-folder"))
