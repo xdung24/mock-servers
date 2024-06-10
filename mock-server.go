@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 
@@ -44,6 +45,11 @@ func setupMockServer(appName string, cacheManager *CacheManager) {
 	r.SetTrustedProxies(nil)
 	gin.SetMode(gin.DebugMode)
 
+	// Show server info
+	fmt.Println("Running mock server for: ", setting.Name)
+	fmt.Println("Host: ", setting.Host)
+	fmt.Println("Port: ", setting.Port)
+
 	// mock all requests
 	for _, request := range setting.Requests {
 		// Handle the request
@@ -52,16 +58,24 @@ func setupMockServer(appName string, cacheManager *CacheManager) {
 			matched_index := findBestMatch(c.Request.URL.String(), request.Responses)
 
 			matched_response := request.Responses[matched_index]
-			// Return response headers
+
+			// Write server headers
+			for _, header := range setting.Headers {
+				log.Println(header.Name, header.Value)
+				c.Header(header.Name, header.Value)
+			}
+
+			// write response headers
 			for _, header := range matched_response.Headers {
-				c.Request.Response.Header.Set(header.Key, header.Value)
+				log.Println(header.Name, header.Value)
+				c.Header(header.Name, header.Value)
 			}
 
 			// Return response body
 			if matched_response.FilePath != "" {
 				res, ok := cacheManager.read(matched_response.FilePath)
 				if ok {
-					c.Data(matched_response.Code, matched_response.ContenType, res)
+					c.Data(matched_response.Code, "", res)
 				}
 			}
 		})

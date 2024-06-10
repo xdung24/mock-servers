@@ -1,6 +1,12 @@
 name: Sample mock server
 host: 0.0.0.0
 port: 9000
+headers:
+  - name: Content-Type
+    value: application/json
+  - name: Access-Control-Allow-Origin
+    value: "*"
+    
 requests:
   - name: sample api to get data
     method: GET
@@ -9,11 +15,17 @@ requests:
       - name: get data success
         query: ?id=1
         code: 200
-        content_type: application/json
         file_path: ./data/sample-server/get-data-success.json
+        headers: 
+          - name: X-Request-Id
+            value: 1
+    
       - name: get data error
         query: ?id=2
         code: 404
+        headers: 
+          - name: X-Request-Id
+            value: 2
 
   - name: sample api to update data
     method: POST

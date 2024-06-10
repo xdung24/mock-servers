@@ -3,13 +3,14 @@ package main
 import "github.com/spf13/viper"
 
 type Config struct {
-	DataFolder  string `mapstructure:"DATA_FOLDER"`
-	UseFsNotify bool   `mapstructure:"USE_FSNOTIFY"`
-	UsePolling  bool   `mapstructure:"USE_POLLING"`
-	PollingTime int    `mapstructure:"POLLING_TIME"`
+	DockerRunning bool   `mapstructure:"DOCKER_RUNNING"`
+	DataFolder    string `mapstructure:"DATA_FOLDER"`
+	UseFsNotify   bool   `mapstructure:"USE_FSNOTIFY"`
+	UsePolling    bool   `mapstructure:"USE_POLLING"`
+	PollingTime   int    `mapstructure:"POLLING_TIME"`
 }
 
-func getConfig() Config {
+func getEnvConfig() Config {
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig()
 

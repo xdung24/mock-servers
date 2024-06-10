@@ -13,6 +13,7 @@ type Setting struct {
 	Host     string    `yaml:"host"`
 	Port     int       `yaml:"port"`
 	Requests []Request `yaml:"requests"`
+	Headers  []Header  `yaml:"headers"`
 }
 
 type Request struct {
@@ -23,16 +24,15 @@ type Request struct {
 }
 
 type Response struct {
-	Name       string   `yaml:"name"`
-	Code       int      `yaml:"code"`
-	Query      string   `yaml:"query"`
-	Headers    []Header `yaml:"header"`
-	ContenType string   `yaml:"content_type"`
-	FilePath   string   `yaml:"file_path"`
+	Name     string   `yaml:"name"`
+	Code     int      `yaml:"code"`
+	Query    string   `yaml:"query"`
+	Headers  []Header `yaml:"headers"`
+	FilePath string   `yaml:"file_path"`
 }
 
 type Header struct {
-	Key   string `yaml:"key"`
+	Name  string `yaml:"name"`
 	Value string `yaml:"value"`
 }
 

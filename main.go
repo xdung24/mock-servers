@@ -11,7 +11,8 @@ import (
 
 func main() {
 	// Get the configuration
-	config := getConfig()
+	config := getEnvConfig()
+	fmt.Println("docker running: ", config.DockerRunning)
 	fmt.Println("data folder: ", config.DataFolder)
 	fmt.Println("use fsnotify: ", config.UseFsNotify)
 	fmt.Println("use polling: ", config.UsePolling)
@@ -39,7 +40,9 @@ func main() {
 	}
 
 	// Wait for the interrupt signal
-	fmt.Println("app is running. Press Ctrl+C to terminate.")
+	if !config.DockerRunning {
+		fmt.Println("app is running. Press Ctrl+C to terminate.")
+	}
 	<-interrupt
 	fmt.Println("terminating the application.")
 }

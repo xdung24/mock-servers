@@ -21,6 +21,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -v -o mock-servers
 # Use the official Debian slim image for a lean production container.
 # https://hub.docker.com/_/debian
 FROM alpine:3.20.0 as lean-production
+ENV DOCKER_RUNNING=true
 
 # Create a folder to store the mock-servers binary
 RUN mkdir -p /mock-servers
