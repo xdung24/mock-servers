@@ -29,7 +29,7 @@ In the fast-paced world of software development, the ability to quickly mock ser
 #### Creating a Config File
 To define your mock servers and their responses, you need to create a config file. This file should be in JSON format and contain the necessary details about the endpoints you wish to mock.
 
-Example `.evn`:
+Example `.env`:
 ```sh
 DATA_FOLDER=./data
 USE_FSNOTIFY=false
