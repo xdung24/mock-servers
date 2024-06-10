@@ -14,6 +14,8 @@ import (
 
 // watchDirectory sets up a watcher on the specified directory path.
 func watchDirectory(path string) error {
+	time.Sleep(5 * time.Second) // Wait for the application to start
+
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return err
@@ -99,6 +101,7 @@ func calculateFolderChecksum(folderPath string) (string, error) {
 }
 
 func pollingDirectory(folderPath string, interval time.Duration) {
+	time.Sleep(5 * time.Second)               // Wait for the application to start
 	pollingInterval := interval * time.Second // Polling interval
 
 	var lastChecksum string = ""
