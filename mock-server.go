@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
 
@@ -47,8 +46,6 @@ func setupMockServer(appName string, cacheManager *CacheManager) {
 
 	// Show server info
 	fmt.Println("Running mock server for: ", setting.Name)
-	fmt.Println("Host: ", setting.Host)
-	fmt.Println("Port: ", setting.Port)
 
 	// mock all requests
 	for _, request := range setting.Requests {
@@ -61,13 +58,11 @@ func setupMockServer(appName string, cacheManager *CacheManager) {
 
 			// Write server headers
 			for _, header := range setting.Headers {
-				log.Println(header.Name, header.Value)
 				c.Header(header.Name, header.Value)
 			}
 
 			// write response headers
 			for _, header := range matched_response.Headers {
-				log.Println(header.Name, header.Value)
 				c.Header(header.Name, header.Value)
 			}
 
