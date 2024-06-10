@@ -12,11 +12,15 @@ import (
 func main() {
 	// Get the configuration
 	config := getEnvConfig()
-	fmt.Println("docker running: ", config.DockerRunning)
-	fmt.Println("data folder: ", config.DataFolder)
-	fmt.Println("use fsnotify: ", config.UseFsNotify)
-	fmt.Println("use polling: ", config.UsePolling)
-	fmt.Println("polling time: ", config.PollingTime)
+	if err := config.Validate(); err != nil {
+		fmt.Println("error validating the configuration: ", err)
+		return
+	} else {
+		fmt.Println("data folder: ", config.DataFolder)
+		fmt.Println("use fsnotify: ", config.UseFsNotify)
+		fmt.Println("use polling: ", config.UsePolling)
+		fmt.Println("polling time: ", config.PollingTime)
+	}
 
 	// Create a channel to capture the interrupt signal (Ctrl+C)
 	interrupt := make(chan os.Signal, 1)
