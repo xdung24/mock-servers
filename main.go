@@ -37,6 +37,8 @@ func main() {
 			setupMockServerGin(appToMock, cacheManager)
 		} else if config.WebEngine == "gorilla" {
 			setupMockServerGorilla(appToMock, cacheManager)
+		} else if config.WebEngine == "echo" {
+			setupMockServerEcho(appToMock, cacheManager)
 		} else if config.WebEngine == "fiber" {
 			setupMockServerFiber(appToMock, cacheManager)
 		} else {
