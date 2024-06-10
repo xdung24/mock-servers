@@ -8,6 +8,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.2
+	github.com/gorilla/mux v1.8.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.19.0

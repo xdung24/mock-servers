@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -44,7 +45,7 @@ func getEnvConfig() Config {
 	rootCmd.Flags().Bool("use-fsnotify", false, "Use FsNotify to watch for changes in the data folder")
 	rootCmd.Flags().Bool("use-polling", false, "Use Polling to watch for changes in the data folder (only use this if fsnotify is not working)")
 	rootCmd.Flags().Int("polling-time", 10, "Polling time in seconds")
-	rootCmd.Flags().String("web-engine", "", "Web engine to use (gin, fiber)")
+	rootCmd.Flags().String("web-engine", "", "Web engine to use (gorilla, gin, echo, fiber)")
 
 	// Bind flags to Viper keys
 	viper.BindPFlag("DATA_FOLDER", rootCmd.Flags().Lookup("data-folder"))
@@ -89,10 +90,10 @@ func (config Config) Validate() error {
 		return errors.New("polling time should be greater than 0")
 	}
 
-	// Web engine should be gin or fiber
-	if config.WebEngine != "gin" && config.WebEngine != "fiber" {
-		return errors.New("web engine should be gin or fiber")
+	// Web engine should be gin, gorilla, echo, fiber
+	engines := []string{"gin", "gorilla", "echo", "fiber"}
+	if !slices.Contains(engines, config.WebEngine) {
+		return errors.New("web engine should be gin, gorilla, echo, fiber")
 	}
-
 	return nil
 }
