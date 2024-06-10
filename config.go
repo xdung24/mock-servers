@@ -66,6 +66,16 @@ func (config Config) Validate() error {
 		return errors.New("data folder is required")
 	}
 
+	// Check if data folder exists
+	if _, err := os.Stat(config.DataFolder); os.IsNotExist(err) {
+		return errors.New("data folder does not exist")
+	}
+
+	// Can not use both fsnotify and polling
+	if config.UseFsNotify && config.UsePolling {
+		return errors.New("can not use both fsnotify and polling")
+	}
+
 	if config.UsePolling && config.PollingTime <= 0 {
 		return errors.New("polling time should be greater than 0")
 	}

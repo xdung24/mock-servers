@@ -27,8 +27,7 @@ func main() {
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	// Create a cache manager
-	ctx := context.TODO()
-	cacheManager := newCacheManager(ctx)
+	cacheManager := newCacheManager(context.TODO())
 
 	// Setup mock servers
 	appsToMock := listSubfolders(config.DataFolder)
