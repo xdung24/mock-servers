@@ -11,12 +11,11 @@ import (
 )
 
 type Config struct {
-	DockerRunning bool   `mapstructure:"DOCKER_RUNNING"`
-	DataFolder    string `mapstructure:"DATA_FOLDER"`
-	UseFsNotify   bool   `mapstructure:"USE_FSNOTIFY"`
-	UsePolling    bool   `mapstructure:"USE_POLLING"`
-	PollingTime   int    `mapstructure:"POLLING_TIME"`
-	WebEngine     string `mapstructure:"WEB_ENGINE"`
+	DataFolder  string `mapstructure:"DATA_FOLDER"`
+	UseFsNotify bool   `mapstructure:"USE_FSNOTIFY"`
+	UsePolling  bool   `mapstructure:"USE_POLLING"`
+	PollingTime int    `mapstructure:"POLLING_TIME"`
+	WebEngine   string `mapstructure:"WEB_ENGINE"`
 }
 
 // Get the configuration from order:
@@ -61,12 +60,11 @@ func getEnvConfig() Config {
 	}
 
 	return Config{
-		DockerRunning: viper.GetBool("DOCKER_RUNNING"),
-		DataFolder:    viper.GetString("DATA_FOLDER"),
-		UseFsNotify:   viper.GetBool("USE_FSNOTIFY"),
-		UsePolling:    viper.GetBool("USE_POLLING"),
-		PollingTime:   viper.GetInt("POLLING_TIME"),
-		WebEngine:     viper.GetString("WEB_ENGINE"),
+		DataFolder:  viper.GetString("DATA_FOLDER"),
+		UseFsNotify: viper.GetBool("USE_FSNOTIFY"),
+		UsePolling:  viper.GetBool("USE_POLLING"),
+		PollingTime: viper.GetInt("POLLING_TIME"),
+		WebEngine:   viper.GetString("WEB_ENGINE"),
 	}
 }
 

@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -54,10 +57,12 @@ func main() {
 		go pollingDirectory(config.DataFolder, time.Duration(config.PollingTime))
 	}
 
+	// pprof
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	// Wait for the interrupt signal
-	if !config.DockerRunning {
-		fmt.Println("app is running. Press Ctrl+C to terminate.")
-	}
 	<-interrupt
 	fmt.Println("terminating the application.")
 }

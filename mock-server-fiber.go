@@ -3,13 +3,19 @@ package main
 import (
 	"fmt"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 	setting := parseSetting(appName)
 	setting.loadResources(cacheManager)
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		Prefork:       true,
+		CaseSensitive: true,
+		StrictRouting: true,
+		ServerHeader:  "fiber",
+		AppName:       appName,
+	})
 
 	// Show server info
 	fmt.Println("Running mock server for: ", setting.Name)
@@ -19,7 +25,7 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 		// Create a local copy of request for the closure
 		localRequest := request
 		// Handle the request
-		app.All(localRequest.Path, func(c fiber.Ctx) error {
+		app.All(localRequest.Path, func(c *fiber.Ctx) error {
 			// Find the most match response
 			matched_index := findBestMatch(c.Request().URI().String(), localRequest.Responses)
 
