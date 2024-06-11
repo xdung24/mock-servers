@@ -10,7 +10,7 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 	setting := parseSetting(appName)
 	setting.loadResources(cacheManager)
 	app := fiber.New(fiber.Config{
-		Prefork:       true,
+		Prefork:       false,
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "fiber",
