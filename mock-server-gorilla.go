@@ -44,7 +44,7 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 					w.Write(res)
 				}
 			}
-		})
+		}).Methods(request.Method)
 	}
 
 	srv := &http.Server{
