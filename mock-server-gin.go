@@ -10,7 +10,7 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 	setting := parseSetting(appName)
 	setting.loadResources(cacheManager)
 	gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
+	r := gin.New()
 	r.SetTrustedProxies(nil)
 
 	// Show server info
