@@ -23,7 +23,7 @@ export const options = {
   };
   
 export default function () {
-    let res = http.get('http://192.168.1.14:9000/api/data?id=1');
+    let res = http.get('http://127.0.0.1:9000/api/data?id=1');
     check(res, {
         'is status 200': (r) => r.status === 200,
     });
