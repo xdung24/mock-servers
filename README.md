@@ -50,6 +50,7 @@ The `settings.json` file should follow this structure:
 - `name`: A string representing the name of the setting.
 - `host`: The host address.
 - `port`: The port number.
+- `swaggerEnabled`: Whether to enable swagger-ui for the host (Either openapi.json/openapi.yml/openapi.yaml is required for this option to work)
 - `requests`: An array of request objects.
 - `headers`: An array of global headers.
 
@@ -70,7 +71,7 @@ Each object in the `responses` array should have the following properties:
 - `code`: The HTTP status code.
 - `query`: A query string.
 - `headers`: An array of headers specific to this response.
-- `file_path`: The path to a file containing the response body.
+- `filePath`: The path to a file containing the response body.
 
 ### Header Object
 
@@ -104,7 +105,7 @@ Below is an example of a `settings.json` file:
               "value": "application/json"
             }
           ],
-          "file_path": "responses/success.json"
+          "filePath": "responses/success.json"
         }
       ]
     }

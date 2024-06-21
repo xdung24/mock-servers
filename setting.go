@@ -9,11 +9,13 @@ import (
 )
 
 type Setting struct {
-	Name     string    `yaml:"name"`
-	Host     string    `yaml:"host"`
-	Port     int       `yaml:"port"`
-	Requests []Request `yaml:"requests"`
-	Headers  []Header  `yaml:"headers"`
+	Name           string    `yaml:"name"`
+	Folder         string    `yaml:"-"`
+	Host           string    `yaml:"host"`
+	Port           int       `yaml:"port"`
+	SwaggerEnabled bool      `yaml:"swaggerEnabled"`
+	Requests       []Request `yaml:"requests"`
+	Headers        []Header  `yaml:"headers"`
 }
 
 type Request struct {
@@ -28,7 +30,7 @@ type Response struct {
 	Code     int      `yaml:"code"`
 	Query    string   `yaml:"query"`
 	Headers  []Header `yaml:"headers"`
-	FilePath string   `yaml:"file_path"`
+	FilePath string   `yaml:"filePath"`
 }
 
 type Header struct {
@@ -52,12 +54,26 @@ func parseSetting(app_name string) *Setting {
 		return nil
 	}
 
+	setting.Folder = app_name
+
 	// Load repsonse body content
 
 	return &setting
 }
 
 func (s *Setting) loadResources(cacheManager *CacheManager) {
+	// cache openapi files
+	if s.SwaggerEnabled {
+		for _, file := range []string{"openapi.json", "openapi.yml", "openapi.yaml"} {
+			file_path := path.Join("data", s.Folder, file)
+			data, err := os.ReadFile(file_path)
+			if err == nil {
+				cacheManager.update(file_path, data)
+			}
+		}
+	}
+
+	// cache response files of all requests
 	for _, req := range s.Requests {
 		for _, resp := range req.Responses {
 			if resp.FilePath == "" {

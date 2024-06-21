@@ -1,6 +1,7 @@
 name: Sample mock server
 host: 0.0.0.0
 port: 9000
+swaggerEnabled: true
 headers:
   - name: Content-Type
     value: application/json
@@ -15,11 +16,11 @@ requests:
       - name: get data success
         query: ?id=1
         code: 200
-        file_path: ./data/sample-server/get-data-success.json
+        filePath: ./data/sample-server/get-data-success.json
         headers: 
           - name: X-Request-Id
             value: 1
-    
+     
       - name: get data error
         query: ?id=2
         code: 404

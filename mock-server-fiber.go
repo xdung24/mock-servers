@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,7 +19,7 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 	})
 
 	// Show server info
-	fmt.Println("Running mock server for: ", setting.Name)
+	fmt.Printf("Serving mock server for: %s on port %v\n", setting.Name, setting.Port)
 
 	// mock all requests
 	for _, request := range setting.Requests {
@@ -50,6 +51,28 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 			}
 			return nil
 		})
+	}
+
+	// Server swagger-ui as static files from embedded resources
+	if setting.SwaggerEnabled {
+		// serve openapi file if file exists
+		openApiFiles := []string{"openapi.json", "openapi.yml", "openapi.yaml"}
+		loaded := false
+		for _, file := range openApiFiles {
+			filePath := fmt.Sprintf("data/%s/%s", setting.Folder, file)
+			if openapi, ok := cacheManager.read(filePath); ok {
+				app.Get("/"+file, func(c *fiber.Ctx) error {
+					return c.SendString(string(openapi))
+				})
+				loaded = true
+				break
+			}
+		}
+		if !loaded {
+			log.Panicf("OpenAPI file not found (openapi.json/openapi.yml/openapi.yaml) in folder: %s", setting.Folder)
+		}
+		// serve swagger-ui files
+		app.Static("/swagger-ui", "swagger-ui")
 	}
 
 	go app.Listen(fmt.Sprintf("%s:%v", setting.Host, setting.Port))

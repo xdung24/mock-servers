@@ -23,6 +23,8 @@ type Config struct {
 // - the environment variables
 // - the command line flags
 func getEnvConfig() Config {
+	cobra.MousetrapHelpText = ""
+
 	// Initialize Viper
 	viper.SetConfigFile(".env") // Load .env file
 	viper.AutomaticEnv()        // Read environment variables

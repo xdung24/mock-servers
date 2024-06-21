@@ -1,0 +1,82 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
+  <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="swagger-ui"></div>
+
+  <script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>
+  <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+  <script>
+    // Function to initialize Swagger UI
+    function initializeSwaggerUI(fileUrl) {
+      const ui = SwaggerUIBundle({
+        url: fileUrl,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      });
+      window.ui = ui;
+    }
+
+    // Function to try loading a file from a list of URLs
+    function tryLoadFiles(fileUrls) {
+      if (fileUrls.length === 0) {
+        console.error('None of the Swagger UI configuration files could be found.');
+        return;
+      }
+
+      const fileUrl = fileUrls.shift(); // Get the first URL from the list
+      fetch(fileUrl).then(response => {
+        if (response.ok) {
+          // If file is found, initialize Swagger UI with it
+          initializeSwaggerUI(fileUrl);
+        } else {
+          // If file is not found, try the next one
+          tryLoadFiles(fileUrls);
+        }
+      });
+    }
+
+    window.onload = function () {
+      // List of file URLs to try loading
+      const fileUrls = ['/openapi.json', '/openapi.yml', '/openapi.yaml'];
+      tryLoadFiles(fileUrls);
+    };
+  </script>
+</body>
+
+</html>

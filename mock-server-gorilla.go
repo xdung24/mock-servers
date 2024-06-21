@@ -14,7 +14,7 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 	setting.loadResources(cacheManager)
 
 	// Show server info
-	fmt.Println("Running mock server for: ", setting.Name)
+	fmt.Printf("Serving mock server for: %s on port %v\n", setting.Name, setting.Port)
 
 	// mock all requests
 	r := mux.NewRouter()
@@ -45,6 +45,32 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 				}
 			}
 		}).Methods(request.Method)
+	}
+
+	// Server swagger-ui as static files from embedded resources
+	if setting.SwaggerEnabled {
+		// serve openapi file if file exists
+		openApiFiles := []string{"openapi.json", "openapi.yml", "openapi.yaml"}
+		loaded := false
+		for _, file := range openApiFiles {
+			filePath := fmt.Sprintf("data/%s/%s", setting.Folder, file)
+			if openapi, ok := cacheManager.read(filePath); ok {
+				r.HandleFunc("/"+file, func(w http.ResponseWriter, r *http.Request) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write(openapi)
+				})
+				loaded = true
+				break
+			}
+
+		}
+		if !loaded {
+			log.Panicf("OpenAPI file not found (openapi.json/openapi.yml/openapi.yaml) in folder: %s", setting.Folder)
+		}
+
+		// serve swagger-ui
+		r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.FS(swaggerUiFolder))))
 	}
 
 	srv := &http.Server{
