@@ -1,8 +1,8 @@
-GOOS := $(shell go env GOOS)
-GOARCH := $(shell go env GOARCH)
+GO_OS := $(shell go env GOOS)
+GO_ARCH := $(shell go env GOARCH)
 
 build:
-	go build -o mock-servers -ldflags "-X main.Goos=$(GOOS) -X main.Goarch=$(GOARCH)" ./...
+	GOOS=$(GO_OS) GOARCH=$(GO_ARCH) go build -o mock-servers -ldflags "-X main.Goos=$(GO_OS) -X main.Goarch=$(GO_ARCH)" ./...
 
 clean:
 	rm -f mock-servers
