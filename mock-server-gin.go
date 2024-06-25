@@ -51,6 +51,12 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 	for _, request := range setting.Requests {
 		// Handle the request
 		r.Handle(request.Method, request.Path, func(c *gin.Context) {
+			if len(request.Responses) == 0 {
+				// write 501 if no response is configured
+				c.Status(http.StatusNotImplemented)
+				return
+			}
+
 			// Find the most match response
 			matched_index := findBestMatch(c.Request.URL.String(), request.Responses)
 

@@ -27,6 +27,12 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 	for _, request := range setting.Requests {
 		// Handle the request
 		e.Add(request.Method, request.Path, func(c echo.Context) error {
+			if len(request.Responses) == 0 {
+				// write 501 if no response is configured
+				c.Response().WriteHeader(501)
+				return nil
+			}
+
 			// Find the most match response
 			matched_index := findBestMatch(c.Request().URL.String(), request.Responses)
 

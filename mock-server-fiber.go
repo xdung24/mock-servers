@@ -29,6 +29,12 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 		localRequest := request
 		// Handle the request
 		app.All(localRequest.Path, func(c *fiber.Ctx) error {
+			if len(request.Responses) == 0 {
+				// write 501 if no response is configured
+				c.Status(http.StatusNotImplemented)
+				return nil
+			}
+
 			// Find the most match response
 			matched_index := findBestMatch(c.Request().URI().String(), localRequest.Responses)
 
