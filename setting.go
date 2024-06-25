@@ -15,7 +15,7 @@ type Setting struct {
 	Port           int       `yaml:"port"`
 	SwaggerEnabled bool      `yaml:"swaggerEnabled"`
 	Requests       []Request `yaml:"requests"`
-	Headers        []Header  `yaml:"headers"`
+	Headers        *[]Header `yaml:"headers"`
 }
 
 type Request struct {
@@ -26,11 +26,11 @@ type Request struct {
 }
 
 type Response struct {
-	Name     string   `yaml:"name"`
-	Code     int      `yaml:"code"`
-	Query    string   `yaml:"query"`
-	Headers  []Header `yaml:"headers"`
-	FilePath *string  `yaml:"filePath,omitempty"`
+	Name     string    `yaml:"name"`
+	Code     int       `yaml:"code"`
+	Query    string    `yaml:"query"`
+	Headers  *[]Header `yaml:"headers"`
+	FilePath *string   `yaml:"filePath,omitempty"`
 }
 
 type Header struct {

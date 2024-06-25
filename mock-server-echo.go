@@ -40,13 +40,17 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 			matched_response := request.Responses[matched_index]
 
 			// Write server headers
-			for _, header := range setting.Headers {
-				c.Response().Header().Set(header.Name, header.Value)
+			if setting.Headers != nil {
+				for _, header := range *setting.Headers {
+					c.Response().Header().Set(header.Name, header.Value)
+				}
 			}
 
 			// write response headers
-			for _, header := range matched_response.Headers {
-				c.Response().Header().Set(header.Name, header.Value)
+			if matched_response.Headers != nil {
+				for _, header := range *matched_response.Headers {
+					c.Response().Header().Set(header.Name, header.Value)
+				}
 			}
 
 			// Return response body
