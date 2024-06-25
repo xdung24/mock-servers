@@ -21,6 +21,10 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 	for _, request := range setting.Requests {
 		// Handle the request
 		r.HandleFunc(request.Path, func(w http.ResponseWriter, r *http.Request) {
+			if len(request.Responses) == 0 {
+				log.Fatalf("No response found for request: %s\n", r.URL.String())
+			}
+
 			// Find the most match response
 			matched_index := findBestMatch(r.URL.String(), request.Responses)
 
