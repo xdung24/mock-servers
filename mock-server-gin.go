@@ -81,7 +81,11 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 				res, ok := cacheManager.read(*matched_response.FilePath)
 				if ok {
 					c.Data(matched_response.Code, "", res)
+				} else {
+					c.Status(matched_response.Code)
 				}
+			} else {
+				c.Status(matched_response.Code)
 			}
 		})
 	}

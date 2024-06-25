@@ -60,7 +60,11 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 				res, ok := cacheManager.read(*matched_response.FilePath)
 				if ok {
 					return c.SendString(string(res))
+				} else {
+					c.Status(matched_response.Code)
 				}
+			} else {
+				c.Status(matched_response.Code)
 			}
 			return nil
 		})
