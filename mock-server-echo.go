@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -14,8 +15,15 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 	// Show server info
 	fmt.Printf("Serving mock server for: %s on port %v\n", setting.Name, setting.Port)
 
-	// mock all requests
+	// Serve swagger-ui as static files from embedded resources
+	static, err := fs.Sub(swaggerUiFolder, "swagger-ui")
+	if err != nil {
+		panic(err)
+	}
+
 	e := echo.New()
+
+	// mock all requests
 	for _, request := range setting.Requests {
 		// Handle the request
 		e.Add(request.Method, request.Path, func(c echo.Context) error {
@@ -70,7 +78,7 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 		}
 
 		// serve swagger-ui
-		e.Static("/swagger-ui", "swagger-ui")
+		e.StaticFS("/swagger-ui", fs.FS(static))
 	}
 
 	go e.Start(fmt.Sprintf("%s:%v", setting.Host, setting.Port))

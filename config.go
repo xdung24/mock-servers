@@ -29,9 +29,7 @@ func getEnvConfig() Config {
 	viper.SetConfigFile(".env") // Load .env file
 	viper.AutomaticEnv()        // Read environment variables
 
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("error reading the config file: ", err)
-	}
+	viper.ReadInConfig()
 
 	// Define a Cobra command
 	rootCmd := &cobra.Command{
