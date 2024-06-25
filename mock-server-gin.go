@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +18,34 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 
 	// Show server info
 	fmt.Printf("Serving mock server for: %s on port %v\n", setting.Name, setting.Port)
+
+	// Server swagger-ui as static files from embedded resources
+	if setting.SwaggerEnabled {
+		static, err := fs.Sub(swaggerUiFolder, "swagger-ui")
+		if err != nil {
+			panic(err)
+		}
+
+		// Serve openapi file if file exists
+		openApiFiles := []string{"openapi.json", "openapi.yml", "openapi.yaml"}
+		loaded := false
+		for _, file := range openApiFiles {
+			filePath := fmt.Sprintf("data/%s/%s", setting.Folder, file)
+			if openapi, ok := cacheManager.read(filePath); ok {
+				r.GET("/"+file, func(c *gin.Context) {
+					c.Data(200, "application/json", openapi)
+				})
+				loaded = true
+				break
+			}
+		}
+		if !loaded {
+			log.Panicf("OpenAPI file not found (openapi.json/openapi.yml/openapi.yaml) in folder: %s", setting.Folder)
+		}
+
+		// serve swagger-ui files
+		r.StaticFS("/swagger-ui", http.FS(static))
+	}
 
 	// mock all requests
 	for _, request := range setting.Requests {
@@ -44,29 +74,6 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 				}
 			}
 		})
-	}
-
-	// Server swagger-ui as static files from embedded resources
-	if setting.SwaggerEnabled {
-		// serve openapi file if file exists
-		openApiFiles := []string{"openapi.json", "openapi.yml", "openapi.yaml"}
-		loaded := false
-		for _, file := range openApiFiles {
-			filePath := fmt.Sprintf("data/%s/%s", setting.Folder, file)
-			if openapi, ok := cacheManager.read(filePath); ok {
-				r.GET("/"+file, func(c *gin.Context) {
-					c.Data(200, "application/json", openapi)
-				})
-				loaded = true
-				break
-			}
-		}
-		if !loaded {
-			log.Panicf("OpenAPI file not found (openapi.json/openapi.yml/openapi.yaml) in folder: %s", setting.Folder)
-		}
-
-		// serve swagger-ui files
-		r.Static("/swagger-ui", "swagger-ui")
 	}
 
 	go r.Run(fmt.Sprintf("%s:%v", setting.Host, setting.Port))

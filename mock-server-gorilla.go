@@ -16,8 +16,9 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 	// Show server info
 	fmt.Printf("Serving mock server for: %s on port %v\n", setting.Name, setting.Port)
 
-	// mock all requests
 	r := mux.NewRouter()
+
+	// mock all requests
 	for _, request := range setting.Requests {
 		// Handle the request
 		r.HandleFunc(request.Path, func(w http.ResponseWriter, r *http.Request) {
@@ -92,5 +93,4 @@ func setupMockServerGorilla(appName string, cacheManager *CacheManager) {
 			log.Println(err)
 		}
 	}()
-
 }
