@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path"
 	"syscall"
 	"time"
 )
@@ -32,8 +33,20 @@ func main() {
 	// Create a cache manager
 	cacheManager := newCacheManager(context.TODO())
 
-	// Setup mock servers
+	// Cache all files in the app to mock folders
 	appsToMock := listSubfolders(config.DataFolder)
+	for _, appToMock := range appsToMock {
+		files := listFilesInfolder(config.DataFolder + "/" + appToMock)
+		for _, file := range files {
+			file_path := path.Join("data", appToMock, file)
+			data, err := os.ReadFile(file_path)
+			if err == nil {
+				cacheManager.update(file_path, data)
+			}
+		}
+	}
+
+	// Setup mock servers
 	for _, appToMock := range appsToMock {
 		if config.WebEngine == "gin" {
 			setupMockServerGin(appToMock, cacheManager)
@@ -81,4 +94,21 @@ func listSubfolders(rootDir string) []string {
 		}
 	}
 	return subfolders
+}
+
+func listFilesInfolder(rootDir string) []string {
+	var files []string
+	entries, err := os.ReadDir(rootDir)
+	if err != nil {
+		fmt.Println(err)
+		return files
+	}
+
+	// Append subfolder to result
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			files = append(files, entry.Name())
+		}
+	}
+	return files
 }
