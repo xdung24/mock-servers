@@ -30,7 +30,7 @@ type Response struct {
 	Code     int      `yaml:"code"`
 	Query    string   `yaml:"query"`
 	Headers  []Header `yaml:"headers"`
-	FilePath string   `yaml:"filePath"`
+	FilePath *string  `yaml:"filePath,omitempty"`
 }
 
 type Header struct {
@@ -74,15 +74,15 @@ func (s *Setting) loadResources(cacheManager *CacheManager) {
 	// cache response files of all requests
 	for _, req := range s.Requests {
 		for _, resp := range req.Responses {
-			if resp.FilePath == "" {
+			if resp.FilePath == nil || *resp.FilePath == "" {
 				continue
 			}
-			data, err := os.ReadFile(resp.FilePath)
+			data, err := os.ReadFile(*resp.FilePath)
 			if err != nil {
 				log.Printf("Can not load resource req: %s resp: %s file %s \n", req.Name, resp.Name, resp.FilePath)
 				panic(err)
 			}
-			cacheManager.update(resp.FilePath, data)
+			cacheManager.update(*resp.FilePath, data)
 		}
 	}
 }

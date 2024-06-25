@@ -50,8 +50,8 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 			}
 
 			// Return response body
-			if matched_response.FilePath != "" {
-				res, ok := cacheManager.read(matched_response.FilePath)
+			if matched_response.FilePath != nil && *matched_response.FilePath != "" {
+				res, ok := cacheManager.read(*matched_response.FilePath)
 				if ok {
 					c.Response().WriteHeader(matched_response.Code)
 					c.Response().Write(res)
