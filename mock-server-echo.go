@@ -26,7 +26,8 @@ func setupMockServerEcho(appName string, cacheManager *CacheManager) {
 	// mock all requests
 	for _, request := range setting.Requests {
 		// Handle the request
-		e.Add(request.Method, request.Path, func(c echo.Context) error {
+		path := findAndReplaceAll(request.Path)
+		e.Add(request.Method, path, func(c echo.Context) error {
 			if len(request.Responses) == 0 {
 				// write 501 if no response is configured
 				c.Response().WriteHeader(501)

@@ -28,7 +28,8 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 		// Create a local copy of request for the closure
 		localRequest := request
 		// Handle the request
-		app.All(localRequest.Path, func(c *fiber.Ctx) error {
+		path := findAndReplaceAll(localRequest.Path)
+		app.All(path, func(c *fiber.Ctx) error {
 			if len(request.Responses) == 0 {
 				// write 501 if no response is configured
 				c.Status(http.StatusNotImplemented)

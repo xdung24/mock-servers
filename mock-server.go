@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -31,4 +32,14 @@ func findBestMatch(urlStr string, responses []Response) int {
 	}
 
 	return bestMatchIndex
+}
+
+// Replace all variables in the path to other format
+// e.g. /api/v1/users/{id}/info/{data} -> /api/v1/users/:id/info/:data
+func findAndReplaceAll(input string) string {
+	// Define the regex pattern to find all occurrences of {var}
+	pattern := regexp.MustCompile(`\{([a-zA-Z0-9_]+)\}`)
+	// Replace all matches with :var
+	output := pattern.ReplaceAllString(input, ":$1")
+	return output
 }

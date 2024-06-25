@@ -50,7 +50,8 @@ func setupMockServerGin(appName string, cacheManager *CacheManager) {
 	// mock all requests
 	for _, request := range setting.Requests {
 		// Handle the request
-		r.Handle(request.Method, request.Path, func(c *gin.Context) {
+		path := findAndReplaceAll(request.Path)
+		r.Handle(request.Method, path, func(c *gin.Context) {
 			if len(request.Responses) == 0 {
 				// write 501 if no response is configured
 				c.Status(http.StatusNotImplemented)

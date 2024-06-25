@@ -56,8 +56,6 @@ func parseSetting(app_name string) *Setting {
 
 	setting.Folder = app_name
 
-	// Load repsonse body content
-
 	return &setting
 }
 
