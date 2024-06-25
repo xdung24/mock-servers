@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
 
 func setupMockServerFiber(appName string, cacheManager *CacheManager) {
@@ -72,7 +74,10 @@ func setupMockServerFiber(appName string, cacheManager *CacheManager) {
 			log.Panicf("OpenAPI file not found (openapi.json/openapi.yml/openapi.yaml) in folder: %s", setting.Folder)
 		}
 		// serve swagger-ui files
-		app.Static("/swagger-ui", "swagger-ui")
+		app.Use("/swagger-ui", filesystem.New(filesystem.Config{
+			Root:       http.FS(swaggerUiFolder),
+			PathPrefix: "swagger-ui",
+		}))
 	}
 
 	go app.Listen(fmt.Sprintf("%s:%v", setting.Host, setting.Port))
