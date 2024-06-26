@@ -1,4 +1,4 @@
-module mock-servers
+module github.com/xdung24/mock-servers
 
 go 1.22.4
 
